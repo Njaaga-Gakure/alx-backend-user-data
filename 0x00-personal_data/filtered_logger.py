@@ -3,7 +3,7 @@
 
 
 from typing import List
-from re import sub
+import re
 
 
 def filter_datum(fields: List[str],
@@ -24,7 +24,6 @@ def filter_datum(fields: List[str],
 
     """
     for field in fields:
-        pattern = r'({}=)([^{}]+)'.format(field, separator)
-        replace_with = r'\1{}'.format(redaction)
-        message = sub(pattern, replace_with, message)
+        message = re.sub(f'{field}=.*?{separator}',
+                         rf'{field}={redaction}{separator}', message)
     return message
