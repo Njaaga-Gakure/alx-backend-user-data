@@ -47,8 +47,9 @@ class BasicAuth(Auth):
             return None, None
         if ':' not in authorization_header:
             return None, None
-        email = authorization_header.split(":")[0]
-        password = authorization_header.split(":")[1]
+        delimeter_index = authorization_header.index(':')
+        email = authorization_header[0:delimeter_index]
+        password = authorization_header[delimeter_index + 1:]
         return email, password
 
     def user_object_from_credentials(self,
