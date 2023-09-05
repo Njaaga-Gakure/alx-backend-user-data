@@ -14,6 +14,17 @@ class Auth:
         """Check if route requires authemtication."""
         if not path or not excluded_paths:
             return True
+        for p in excluded_paths:
+            if "*" in p:
+                wildcard_str = p.split("/")
+                wildcard_str = [item for item in wildcard_str if item != ""]
+                wildcard_str = wildcard_str[len(wildcard_str) - 1]
+                wildcard_str = wildcard_str.replace("*", "")
+                path_str = path.split("/")
+                path_str = [item for item in path_str if item != ""]
+                path_str = path_str[len(path_str) - 1]
+                if path_str.startswith(wildcard_str):
+                    return False
         if path[len(path) - 1] != "/":
             path = path + "/"
         if path in excluded_paths:
