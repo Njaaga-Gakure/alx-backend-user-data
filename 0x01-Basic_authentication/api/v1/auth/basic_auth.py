@@ -3,6 +3,7 @@
 
 
 from api.v1.auth.auth import Auth
+from base64 import b64decode, binascii
 
 
 class BasicAuth(Auth):
@@ -21,3 +22,16 @@ class BasicAuth(Auth):
             return None
 
         return authorization_header.split(" ")[1]
+
+    def decode_base64_authorization_header(self,
+                                           authorization_header: str) -> str:
+        """Decode a base64 authorization header."""
+        if not authorization_header:
+            return None
+        if not isinstance(authorization_header, str):
+            return None
+
+        try:
+            return b64decode(authorization_header).decode('utf-8')
+        except binascii.Error as e:
+            return None
