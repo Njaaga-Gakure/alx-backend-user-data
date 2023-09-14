@@ -6,7 +6,8 @@ from flask import (Flask,
                    jsonify,
                    request,
                    abort,
-                   make_response)
+                   make_response,
+                   redirect)
 from auth import Auth
 
 
@@ -47,6 +48,18 @@ def login():
         response = make_response({"email": email, "message": "logged in"})
         response.set_cookie('session_id', session_id)
         return response
+
+
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout():
+    """Handle logout."""
+    session_id = request.cookies.get('session_id')
+    user = AUTH.get_user_from_session_id(session_id)
+    if user:
+        user_id = getattr(user, 'id')
+        AUTH.destroy_session(user_id)
+        return redirect('/')
+    abort(403)
 
 
 if __name__ == "__main__":
